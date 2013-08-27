@@ -1,0 +1,20 @@
+<head>
+  <title>Babelchat</title>
+</head>
+
+<body>
+  <div id="rooms-container">
+  	{{> roomList}}
+  </div>
+</body>	
+
+<template name="roomList">
+	<h2 id="title">BabelChat</h2>
+	<div id="rooms" class="btn-group">
+		{{#each rooms}}
+			<div class="category btn btn-inverse">		
+				{{roomName}}
+			</div>
+		{{/each}}
+	</div>
+</template>

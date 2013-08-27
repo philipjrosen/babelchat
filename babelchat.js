@@ -15,22 +15,47 @@ if (Meteor.isClient) {
     return Translations.find();
   };
 
+  var translateMessage = function(user, text, timestamp) {
+    var src = 'en';
+    var trg = 'es';
+    var request_url = 'https://www.googleapis.com/language/translate/v2';
+    var request_params = {
+      key: 'AIzaSyApd5b77jtVRZCfCAn6wzlaD52FoXeJwCw',
+      source: src,
+      target: trg,
+      q: text
+    };
+    Meteor.http.get(request_url, {params: request_params}, function (err, res) {  
+      if(err){
+        console.log(err);
+      } else {
+        Translations.insert({
+          user: user,
+          text:res.data.data.translations[0].translatedText,
+          ts: timestamp
+        });
+      }
+    });
+  };
+
   Template.messageEntry.events({  
     "keypress #message-entry" : function(evt, templ) {
       if(evt.keyCode === 13) {
         evt.preventDefault();
         var text = templ.find("#message-entry").value;
         var ts = new Date();
+        var user = "John";
         ts = (ts.getMonth() + 1) + "/" + ts.getDate() + "/" + ts.getFullYear();
-        Translations.insert({
+        Messages.insert({
           text: text, 
-          user: "John",
+          user: user,
           ts: ts
         });
         templ.find('#message-entry').value = "";
+        translateMessage(user, text, ts);
       }
     }
-  });   
+  });
 }
 
 if (Meteor.isServer) {

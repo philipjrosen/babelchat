@@ -5,6 +5,7 @@
 <body>
   <div id="rooms-container">
   	{{> roomList}}
+  	{{> translatedMessages}}
   </div>
 </body>	
 
@@ -12,9 +13,23 @@
 	<h2 id="title">BabelChat</h2>
 	<div id="rooms" class="btn-group">
 		{{#each rooms}}
-			<div class="category btn btn-inverse">		
+			<div class="room btn btn-inverse">
 				{{roomName}}
 			</div>
 		{{/each}}
 	</div>
+</template>
+
+<template name="translatedMessages">
+	<div id="translations-container">
+		<ul>
+			{{#each translations}}
+				{{> translation}}
+			{{/each}}
+		</ul>
+	</div>
+</template>
+
+<template name="translation">
+	<li><strong>{{user}}: </strong><span>{{text}}</span></li>
 </template>

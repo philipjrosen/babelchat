@@ -14,6 +14,23 @@ if (Meteor.isClient) {
   Template.translatedMessages.translations = function() {
     return Translations.find();
   };
+
+  Template.messageEntry.events({  
+    "keypress #message-entry" : function(evt, templ) {
+      if(evt.keyCode === 13) {
+        evt.preventDefault();
+        var text = templ.find("#message-entry").value;
+        var ts = new Date();
+        ts = (ts.getMonth() + 1) + "/" + ts.getDate() + "/" + ts.getFullYear();
+        Translations.insert({
+          text: text, 
+          user: "John",
+          ts: ts
+        });
+        templ.find('#message-entry').value = "";
+      }
+    }
+  });   
 }
 
 if (Meteor.isServer) {

@@ -1,4 +1,9 @@
 /* CSS declarations go here */
+body {
+  background-color: #ccc;
+}
 li {
   list-style-type: none;
 }
+
+

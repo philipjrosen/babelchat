@@ -8,40 +8,40 @@ if (Meteor.isClient) {
     key: 'AIzaSyApd5b77jtVRZCfCAn6wzlaD52FoXeJwCw'
   };  
 
-  var addMessage = function(room_id, user, sourceText, transText, timestamp) {
-    if(!sourceText && !room_id) {
+  var addMessage = function(user, text, timestamp, translation, room_id) {
+    if(!text && !room_id) {
       return;
     }
     Chats.update({_id:room_id}, 
       {$addToSet:{
         messages:{
           user: user,
-          sourceText: sourceText,
-          transText: transText, 
+          sourceText: text,
+          transText: translation, 
           timestamp: timestamp 
         }
       }
     });
   };
  
-  var callGoogle = function(room_id, user, text, timestamp, params) {
+  var callGoogle = function(user, text, timestamp, params, room_id) {
     Meteor.http.get(globals.url, {params: params}, function (err, res) {  
       if(err){
         console.log(err);
       } else {
-        var trans = res.data.data.translations[0].translatedText;
-        addMessage(room_id, user, text, trans, timestamp);
+        var translation = res.data.data.translations[0].translatedText;
+        addMessage(user, text, timestamp, translation, room_id);
       }
     });
   };  
 
-  var translateMessage = function(language, user, text, timestamp) {
+  var translateMessage = function(user, text, timestamp, language) {
     var src = language;
     var room_id = Session.get('current_room');
     var currRoom = Chats.findOne({_id:room_id});
     var trg = currRoom.target;
     var params = {key: globals.key, source: src, target: trg, q: text};
-    callGoogle(room_id, user, text,timestamp, params);
+    callGoogle(user, text,timestamp, params, room_id);
   };
 
   var detectLanguage = function(user, text, timestamp) {
@@ -54,7 +54,7 @@ if (Meteor.isClient) {
         console.log(err);
       } else {
         language = res.data.data.detections[0][0].language;
-        translateMessage(language, user, text, timestamp);
+        translateMessage(user, text, timestamp, language);
       }
     });
   }; 

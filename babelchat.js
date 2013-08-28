@@ -1,24 +1,27 @@
 Chats = new Meteor.Collection('chats');
-// Rooms = new Meteor.Collection('rooms');
-Messages = new Meteor.Collection('messages');
-Translations = new Meteor.Collection('translations');
 
 if (Meteor.isClient) {
-  Template.roomList.rooms = function () {
-    return Chats.find({},{sort: {rooms: 1}});
+  ///// HELPER FUNCTIONS ////
+  var addMessage = function(room_id, user,sourceText, transText, timestamp) {
+    if(!sourceText && !room_id) {
+      return;
+    }
+    Chats.update({_id:room_id}, 
+      {$addToSet:{
+        messages:{
+          user: user,
+          sourceText: sourceText,
+          transText: transText, 
+          timestamp: timestamp 
+        }
+      }
+    });
   };
 
-  // Template.sourceMessages.messages = function() {
-  //   return Messagess.find();
-  // };
-
-  Template.translatedMessages.translations = function() {
-    return Translations.find();
-  };
-///// HELPER FUNCTIONS ////
-  var translateMessage = function(language, user, text, timestamp) {
+  var translateMessage = function(language, target, user, text, timestamp) {
     var src = language;
-    var trg = 'es';
+    var trg = target;
+    var room_id = Session.get('current_room');
     var request_url = 'https://www.googleapis.com/language/translate/v2';
     var request_params = {
       key: 'AIzaSyApd5b77jtVRZCfCAn6wzlaD52FoXeJwCw',
@@ -31,17 +34,15 @@ if (Meteor.isClient) {
       if(err){
         console.log(err);
       } else {
-        Translations.insert({
-          user: user,
-          text: res.data.data.translations[0].translatedText,
-          ts: timestamp
-        });
+        var trans = res.data.data.translations[0].translatedText;
+        addMessage(room_id, user, text, trans, timestamp);
       }
     });
   };
 
   var detectLanguage = function(user, text, timestamp) {
     var language;
+    var target;
     var request_url = 'https://www.googleapis.com/language/translate/v2/detect';
     var request_params = {
       key: 'AIzaSyApd5b77jtVRZCfCAn6wzlaD52FoXeJwCw',
@@ -53,11 +54,48 @@ if (Meteor.isClient) {
         console.log(err);
       } else {
         language = res.data.data.detections[0][0].language;
+        // target = Chats.findOne({_id:Session.get('current_room')});
+        target = 'es';
         console.log("langauge detected", language);
-        translateMessage(language, user, text, timestamp);
+        translateMessage(language, target, user, text, timestamp);
       }
     });
   }; 
+
+  ///TEMPLATE HELPERS ///
+  Template.roomList.rooms = function () {
+    return Chats.find();
+  };
+
+  Template.translatedMessages.messages = function() {
+    if (Session.equals('current_room', null)) {
+      return null;
+    } else {
+      var currRoom = Chats.findOne({_id:Session.get('current_room')});
+      if (currRoom && currRoom.messages) {
+        return currRoom.messages;
+      }      
+    }
+  };
+
+  Template.translatedMessages.room_selected = function() {
+    return ((Session.get('current_room') !== undefined) && (!Session.equals('current_room',null)));
+  };
+
+  Template.roomList.list_status = function() {
+    if (Session.equals('current_room', this._id)) {
+      return "";
+    } else {
+      return " btn-inverse";
+    }
+  };
+
+  ///// EVENT HANDLERS////
+  Template.roomList.events({
+    'click .room' : function() {
+      Session.set('current_room', this._id);
+    }
+  });
 
   Template.messageEntry.events({  
     "keypress #message-entry" : function(evt, templ) {
@@ -67,85 +105,27 @@ if (Meteor.isClient) {
         var ts = new Date();
         var user = "John";
         ts = (ts.getMonth() + 1) + "/" + ts.getDate() + "/" + ts.getFullYear();
-        Messages.insert({
-          text: text, 
-          user: user,
-          ts: ts
-        });
+        // Messages.insert({
+        //   text: text, 
+        //   user: user,
+        //   ts: ts
+        // });
         templ.find('#message-entry').value = "";
         detectLanguage(user, text, ts);
       }
-    },
+    }
   });
-}
 
+}//END CLIENT CODE
+
+//SERVER CODE//
 if (Meteor.isServer) {
   Meteor.startup(function () {
-    if(Chats.find().count() < 6) {
-      Chats.insert({
-        "room": "Spanish",
-        "messsages" : [
-          {
-          "user" : "John",
-          "sourceText" : "Imagine",
-          "transText" : "Imaginate",
-          "timestamp"   :  10001 
-          },
-          {
-          "user" : "Paul",
-          "sourceText" : "Yesterday",
-          "transText" : "Ayer",
-          "timestamp"   :  10002 
-          }
-        ]
-      });
-      Chats.insert({
-        "room": "German",
-        "messsages" : [
-          {
-          "user" : "John",
-          "sourceText" : "Imagine",
-          "transText" : "Stell' dir vor",
-          "timestamp"   :  10001 
-          },
-          {
-          "user" : "Paul",
-          "sourceText" : "Yesterday",
-          "transText" : "Gestern",
-          "timestamp"   :  10002 
-          }
-        ]
-      });
+    if(Chats.find().count() === 0) {
+      Chats.insert({room:'English'});
+      Chats.insert({room:'Spanish'});
+      Chats.insert({room:'French'});
+      Chats.insert({room:'German'});
     }
   });
 }
-
-// if (Meteor.isServer) {
-//   Meteor.startup(function () {
-//     if(Rooms.find().count() === 0) {
-//       Rooms.insert({roomName:'English'});
-//       Rooms.insert({roomName:'Spanish'});
-//       Rooms.insert({roomName:'French'});
-//       Rooms.insert({roomName:'German'});
-//     }
-//     if(Translations.find().count() === 0) {
-//       Translations.insert({
-//         user: "John",
-//         text: "Imaginate"
-//       });
-//       Translations.insert({
-//         user: "Paul",
-//         text: "Dame tu mano?"
-//       });
-//       Translations.insert({
-//         user: "George",
-//         text: "Algo"
-//       });
-//       Translations.insert({
-//         user: "Ringo",
-//         text: "Octupus"
-//       });
-//     }
-//   });
-// }
-

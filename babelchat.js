@@ -20,8 +20,10 @@ if (Meteor.isClient) {
 
   var translateMessage = function(language, target, user, text, timestamp) {
     var src = language;
-    var trg = target;
     var room_id = Session.get('current_room');
+    var currRoom = Chats.findOne({_id:Session.get('current_room')});
+    var trg = currRoom.target;
+    console.log('trg', trg);
     var request_url = 'https://www.googleapis.com/language/translate/v2';
     var request_params = {
       key: 'AIzaSyApd5b77jtVRZCfCAn6wzlaD52FoXeJwCw',
@@ -105,11 +107,6 @@ if (Meteor.isClient) {
         var ts = new Date();
         var user = "John";
         ts = (ts.getMonth() + 1) + "/" + ts.getDate() + "/" + ts.getFullYear();
-        // Messages.insert({
-        //   text: text, 
-        //   user: user,
-        //   ts: ts
-        // });
         templ.find('#message-entry').value = "";
         detectLanguage(user, text, ts);
       }
@@ -122,10 +119,10 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
   Meteor.startup(function () {
     if(Chats.find().count() === 0) {
-      Chats.insert({room:'English'});
-      Chats.insert({room:'Spanish'});
-      Chats.insert({room:'French'});
-      Chats.insert({room:'German'});
+      Chats.insert({room:'English', target:'en'});
+      Chats.insert({room:'Spanish', target:'es'});
+      Chats.insert({room:'French',  target:'fr'});
+      Chats.insert({room:'German',  target:'de'});
     }
   });
 }

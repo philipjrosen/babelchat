@@ -15,6 +15,25 @@ if (Meteor.isClient) {
     return Translations.find();
   };
 
+
+  var detectLanguage = function(text) {
+    var language;
+    var request_url = 'https://www.googleapis.com/language/translate/v2/detect';
+    var request_params = {
+      key: 'AIzaSyApd5b77jtVRZCfCAn6wzlaD52FoXeJwCw',
+      q: text
+    };
+    Meteor.http.get(request_url, {params: request_params}, function (err, res) {  
+      if(err){
+        console.log(err);
+      } else {
+        language = res.data.data.detections[0][0].language;
+        console.log(language);
+      }
+    });
+    return language;
+  };
+
   var translateMessage = function(user, text, timestamp) {
     var src = 'en';
     var trg = 'es';
@@ -31,7 +50,7 @@ if (Meteor.isClient) {
       } else {
         Translations.insert({
           user: user,
-          text:res.data.data.translations[0].translatedText,
+          text: res.data.data.translations[0].translatedText,
           ts: timestamp
         });
       }
@@ -53,8 +72,9 @@ if (Meteor.isClient) {
         });
         templ.find('#message-entry').value = "";
         translateMessage(user, text, ts);
+        detectLanguage(text);
       }
-    }
+    },
   });
 }
 

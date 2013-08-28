@@ -2,7 +2,13 @@ Chats = new Meteor.Collection('chats');
 
 if (Meteor.isClient) {
   ///// HELPER FUNCTIONS ////
-  var addMessage = function(room_id, user,sourceText, transText, timestamp) {
+
+  var globals = {
+    url: 'https://www.googleapis.com/language/translate/v2',
+    key: 'AIzaSyApd5b77jtVRZCfCAn6wzlaD52FoXeJwCw'
+  };  
+
+  var addMessage = function(room_id, user, sourceText, transText, timestamp) {
     if(!sourceText && !room_id) {
       return;
     }
@@ -17,22 +23,9 @@ if (Meteor.isClient) {
       }
     });
   };
-
-  var translateMessage = function(language, target, user, text, timestamp) {
-    var src = language;
-    var room_id = Session.get('current_room');
-    var currRoom = Chats.findOne({_id:Session.get('current_room')});
-    var trg = currRoom.target;
-    console.log('trg', trg);
-    var request_url = 'https://www.googleapis.com/language/translate/v2';
-    var request_params = {
-      key: 'AIzaSyApd5b77jtVRZCfCAn6wzlaD52FoXeJwCw',
-      source: src,
-      target: trg,
-      q: text
-    };
-
-    Meteor.http.get(request_url, {params: request_params}, function (err, res) {  
+ 
+  var callGoogle = function(room_id, user, text, timestamp, params) {
+    Meteor.http.get(globals.url, {params: params}, function (err, res) {  
       if(err){
         console.log(err);
       } else {
@@ -40,26 +33,28 @@ if (Meteor.isClient) {
         addMessage(room_id, user, text, trans, timestamp);
       }
     });
+  };  
+
+  var translateMessage = function(language, user, text, timestamp) {
+    var src = language;
+    var room_id = Session.get('current_room');
+    var currRoom = Chats.findOne({_id:room_id});
+    var trg = currRoom.target;
+    var params = {key: globals.key, source: src, target: trg, q: text};
+    callGoogle(room_id, user, text,timestamp, params);
   };
 
   var detectLanguage = function(user, text, timestamp) {
     var language;
-    var target;
-    var request_url = 'https://www.googleapis.com/language/translate/v2/detect';
-    var request_params = {
-      key: 'AIzaSyApd5b77jtVRZCfCAn6wzlaD52FoXeJwCw',
-      q: text
-    };
+    var url = globals.url + '/detect';
+    var params = {key: globals.key, q: text};
 
-    Meteor.http.get(request_url, {params: request_params}, function (err, res) {  
+    Meteor.http.get(url, {params: params}, function (err, res) {  
       if(err){
         console.log(err);
       } else {
         language = res.data.data.detections[0][0].language;
-        // target = Chats.findOne({_id:Session.get('current_room')});
-        target = 'es';
-        console.log("langauge detected", language);
-        translateMessage(language, target, user, text, timestamp);
+        translateMessage(language, user, text, timestamp);
       }
     });
   }; 
@@ -123,6 +118,8 @@ if (Meteor.isServer) {
       Chats.insert({room:'Spanish', target:'es'});
       Chats.insert({room:'French',  target:'fr'});
       Chats.insert({room:'German',  target:'de'});
+      Chats.insert({room:'Hebrew',  target:'iw'});
+      Chats.insert({room:'Italian', target:'it'});
     }
   });
 }

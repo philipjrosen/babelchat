@@ -1,10 +1,11 @@
-Rooms = new Meteor.Collection('rooms');
+Chats = new Meteor.Collection('chats');
+// Rooms = new Meteor.Collection('rooms');
 Messages = new Meteor.Collection('messages');
 Translations = new Meteor.Collection('translations');
 
 if (Meteor.isClient) {
   Template.roomList.rooms = function () {
-    return Rooms.find({},{sort: {Category: 1}});
+    return Chats.find({},{sort: {rooms: 1}});
   };
 
   // Template.sourceMessages.messages = function() {
@@ -14,9 +15,8 @@ if (Meteor.isClient) {
   Template.translatedMessages.translations = function() {
     return Translations.find();
   };
-
+///// HELPER FUNCTIONS ////
   var translateMessage = function(language, user, text, timestamp) {
-    // var src = 'en';
     var src = language;
     var trg = 'es';
     var request_url = 'https://www.googleapis.com/language/translate/v2';
@@ -79,45 +79,73 @@ if (Meteor.isClient) {
   });
 }
 
-var detectAPIcall = function() {
-
-};
-
-var translateAPIcall = function() {
-
-};
-
-var translatedText = function(user, text, ts, callback) {
-  detectAPIcall();
-
-};
-
 if (Meteor.isServer) {
   Meteor.startup(function () {
-    if(Rooms.find().count() === 0) {
-      Rooms.insert({roomName:'English'});
-      Rooms.insert({roomName:'Spanish'});
-      Rooms.insert({roomName:'French'});
-      Rooms.insert({roomName:'German'});
-    }
-    if(Translations.find().count() === 0) {
-      Translations.insert({
-        user: "John",
-        text: "Imaginate"
+    if(Chats.find().count() < 6) {
+      Chats.insert({
+        "room": "Spanish",
+        "messsages" : [
+          {
+          "user" : "John",
+          "sourceText" : "Imagine",
+          "transText" : "Imaginate",
+          "timestamp"   :  10001 
+          },
+          {
+          "user" : "Paul",
+          "sourceText" : "Yesterday",
+          "transText" : "Ayer",
+          "timestamp"   :  10002 
+          }
+        ]
       });
-      Translations.insert({
-        user: "Paul",
-        text: "Dame tu mano?"
-      });
-      Translations.insert({
-        user: "George",
-        text: "Algo"
-      });
-      Translations.insert({
-        user: "Ringo",
-        text: "Octupus"
+      Chats.insert({
+        "room": "German",
+        "messsages" : [
+          {
+          "user" : "John",
+          "sourceText" : "Imagine",
+          "transText" : "Stell' dir vor",
+          "timestamp"   :  10001 
+          },
+          {
+          "user" : "Paul",
+          "sourceText" : "Yesterday",
+          "transText" : "Gestern",
+          "timestamp"   :  10002 
+          }
+        ]
       });
     }
   });
 }
+
+// if (Meteor.isServer) {
+//   Meteor.startup(function () {
+//     if(Rooms.find().count() === 0) {
+//       Rooms.insert({roomName:'English'});
+//       Rooms.insert({roomName:'Spanish'});
+//       Rooms.insert({roomName:'French'});
+//       Rooms.insert({roomName:'German'});
+//     }
+//     if(Translations.find().count() === 0) {
+//       Translations.insert({
+//         user: "John",
+//         text: "Imaginate"
+//       });
+//       Translations.insert({
+//         user: "Paul",
+//         text: "Dame tu mano?"
+//       });
+//       Translations.insert({
+//         user: "George",
+//         text: "Algo"
+//       });
+//       Translations.insert({
+//         user: "Ringo",
+//         text: "Octupus"
+//       });
+//     }
+//   });
+// }
 

@@ -15,27 +15,9 @@ if (Meteor.isClient) {
     return Translations.find();
   };
 
-
-  var detectLanguage = function(text) {
-    var language;
-    var request_url = 'https://www.googleapis.com/language/translate/v2/detect';
-    var request_params = {
-      key: 'AIzaSyApd5b77jtVRZCfCAn6wzlaD52FoXeJwCw',
-      q: text
-    };
-    Meteor.http.get(request_url, {params: request_params}, function (err, res) {  
-      if(err){
-        console.log(err);
-      } else {
-        language = res.data.data.detections[0][0].language;
-        console.log(language);
-      }
-    });
-    return language;
-  };
-
-  var translateMessage = function(user, text, timestamp) {
-    var src = 'en';
+  var translateMessage = function(language, user, text, timestamp) {
+    // var src = 'en';
+    var src = language;
     var trg = 'es';
     var request_url = 'https://www.googleapis.com/language/translate/v2';
     var request_params = {
@@ -44,6 +26,7 @@ if (Meteor.isClient) {
       target: trg,
       q: text
     };
+
     Meteor.http.get(request_url, {params: request_params}, function (err, res) {  
       if(err){
         console.log(err);
@@ -56,6 +39,25 @@ if (Meteor.isClient) {
       }
     });
   };
+
+  var detectLanguage = function(user, text, timestamp) {
+    var language;
+    var request_url = 'https://www.googleapis.com/language/translate/v2/detect';
+    var request_params = {
+      key: 'AIzaSyApd5b77jtVRZCfCAn6wzlaD52FoXeJwCw',
+      q: text
+    };
+
+    Meteor.http.get(request_url, {params: request_params}, function (err, res) {  
+      if(err){
+        console.log(err);
+      } else {
+        language = res.data.data.detections[0][0].language;
+        console.log("langauge detected", language);
+        translateMessage(language, user, text, timestamp);
+      }
+    });
+  }; 
 
   Template.messageEntry.events({  
     "keypress #message-entry" : function(evt, templ) {
@@ -71,12 +73,24 @@ if (Meteor.isClient) {
           ts: ts
         });
         templ.find('#message-entry').value = "";
-        translateMessage(user, text, ts);
-        detectLanguage(text);
+        detectLanguage(user, text, ts);
       }
     },
   });
 }
+
+var detectAPIcall = function() {
+
+};
+
+var translateAPIcall = function() {
+
+};
+
+var translatedText = function(user, text, ts, callback) {
+  detectAPIcall();
+
+};
 
 if (Meteor.isServer) {
   Meteor.startup(function () {

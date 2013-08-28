@@ -48,13 +48,21 @@ if (Meteor.isClient) {
     var trg = currRoom.target;
     var url = globals.url;
     var params = {key: globals.key, source: src, target: trg, q: text};
-    callGoogle(user, text, timestamp, params, url, room_id);
+    //if the user chooses to type in the language of the current room
+    if (src === trg) {
+      addMessage(user, text, timestamp, text, room_id);
+    } else {
+    //call the API to translate the message text
+      callGoogle(user, text, timestamp, params, url, room_id);
+    }
   };
 
   var detectLanguage = function(user, text, timestamp) {
     var language;
     var url = globals.url + '/detect';
     var params = {key: globals.key, q: text};
+
+    //call the API to detect the input language
     callGoogle(user, text, timestamp, params, url)
   }; 
 

@@ -8,3 +8,8 @@ Template.translationsList.messages = function() {
       }      
     }
   };
+
+//It doesn't seem like this variable is used anywhere
+Template.translationsList.room_selected = function() {
+  return ((Session.get('current_room') !== undefined) && (!Session.equals('current_room',null)));
+};

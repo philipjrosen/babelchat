@@ -81,7 +81,7 @@ if (Meteor.isClient) {
       }      
     }
   };
-
+  //It doesn't seem like this variable is used anywhere
   Template.translatedMessages.room_selected = function() {
     return ((Session.get('current_room') !== undefined) && (!Session.equals('current_room',null)));
   };

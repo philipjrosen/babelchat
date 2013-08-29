@@ -1,17 +1,4 @@
-<head>
-  <title>Babelchat</title>
-</head>
-
-<body>
-  <div id="rooms-container">
-  	{{> roomList}}
-  	{{> translatedMessages}}
-  	{{> messageEntry}}
-  </div>
-</body>	
-
 <template name="roomList">
-	<h2 id="title">BabelChat</h2>
 	<div id="rooms" class="btn-group">
 		{{#each rooms}}
 			<div class="room btn {{list_status}}" id="{{_id}}">

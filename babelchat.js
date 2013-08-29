@@ -67,7 +67,7 @@ if (Meteor.isClient) {
   }; 
 
   ///TEMPLATE HELPERS ///
-  Template.roomList.rooms = function () {
+  Template.roomsList.rooms = function () {
     return Chats.find();
   };
 
@@ -86,7 +86,7 @@ if (Meteor.isClient) {
     return ((Session.get('current_room') !== undefined) && (!Session.equals('current_room',null)));
   };
 
-  Template.roomList.list_status = function() {
+  Template.roomsList.list_status = function() {
     if (Session.equals('current_room', this._id)) {
       return "";
     } else {
@@ -95,7 +95,7 @@ if (Meteor.isClient) {
   };
 
   ///// EVENT HANDLERS////
-  Template.roomList.events({
+  Template.roomsList.events({
     'click .room' : function() {
       Session.set('current_room', this._id);
     }

@@ -1,5 +1,3 @@
-Chats = new Meteor.Collection('chats');
-
 if (Meteor.isClient) {
   ///// HELPER FUNCTIONS ////
 

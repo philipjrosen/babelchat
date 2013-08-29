@@ -23,6 +23,22 @@ var addMessage = function(user, text, timestamp, translation, room_id) {
   });
 };
 
+var translateMessage = function(user, text, timestamp, language) {
+  var src = language;
+  var room_id = Session.get('current_room');
+  var currRoom = Chats.findOne({_id:room_id});
+  var trg = currRoom.target;
+  var url = globals.url;
+  var params = {key: globals.key, source: src, target: trg, q: text};
+  //if the user chooses to type in the language of the current room
+  if (src === trg) {
+    addMessage(user, text, timestamp, text, room_id);
+  } else {
+  //call the API to translate the message text
+    callGoogle(user, text, timestamp, params, url, room_id);
+  }
+};
+
 var callGoogle = function(user, text, timestamp, params, url, room_id) {
   var toggle = arguments.length;
   Meteor.http.get(url, {params: params}, function (err, res) {  
@@ -39,22 +55,6 @@ var callGoogle = function(user, text, timestamp, params, url, room_id) {
     }
   });
 };  
-
-var translateMessage = function(user, text, timestamp, language) {
-  var src = language;
-  var room_id = Session.get('current_room');
-  var currRoom = Chats.findOne({_id:room_id});
-  var trg = currRoom.target;
-  var url = globals.url;
-  var params = {key: globals.key, source: src, target: trg, q: text};
-  //if the user chooses to type in the language of the current room
-  if (src === trg) {
-    addMessage(user, text, timestamp, text, room_id);
-  } else {
-  //call the API to translate the message text
-    callGoogle(user, text, timestamp, params, url, room_id);
-  }
-};
 
 var detectLanguage = function(user, text, timestamp) {
   var language;

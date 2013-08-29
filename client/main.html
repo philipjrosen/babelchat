@@ -5,13 +5,11 @@
   <div class="container">
     <header class="navbar">
       <div class="navbar-inner">
-        <a class="brand" href="/">BabelChat</a>
+        <a class="brand" href="{{homePath}}">BabelChat</a>
       </div>
     </header>
     <div id="main" class="row-fluid">
-      {{> roomsList}}
-      {{> translationsList}}
-      {{> messageEntry}}
+      {{renderPage}}
     </div>
   </div>
 </body>

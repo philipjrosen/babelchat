@@ -12,6 +12,9 @@ if (Meteor.isClient) {
     if(!text && !room_id) {
       return;
     }
+    var regex = /&#39;/g;
+    translation = translation.replace(regex, "'");
+    
     Chats.update({_id:room_id}, 
       {$addToSet:{
         messages:{

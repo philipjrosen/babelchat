@@ -9,3 +9,9 @@ Template.roomsList.list_status = function() {
     return " btn-inverse";
   }
 };
+
+Template.roomsList.events({
+  'click .room' : function() {
+    Session.set('current_room', this._id);
+  }
+});

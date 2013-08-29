@@ -63,14 +63,7 @@ var detectLanguage = function(user, text, timestamp) {
 
   //call the API to detect the input language
   callGoogle(user, text, timestamp, params, url)
-}; 
-
-
-Template.roomsList.events({
-  'click .room' : function() {
-    Session.set('current_room', this._id);
-  }
-});
+};
 
 Template.messageEntry.events({  
   "keypress #message-entry" : function(evt, templ) {

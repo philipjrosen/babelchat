@@ -1,5 +1,5 @@
 Template.roomsList.rooms = function () {
-  return Chats.find();
+  return Chats.find({}, {sort: {room: 1}});
 };
 
 Template.roomsList.list_status = function() {

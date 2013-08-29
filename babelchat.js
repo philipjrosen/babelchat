@@ -12,6 +12,7 @@ if (Meteor.isClient) {
     if(!text && !room_id) {
       return;
     }
+    //put in the apostrophe if ascii comes back instead
     var regex = /&#39;/g;
     translation = translation.replace(regex, "'");
     

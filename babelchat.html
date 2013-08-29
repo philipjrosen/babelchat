@@ -1,5 +1,5 @@
-<template name="translatedMessages">
-	<div id="translations-container">
+<template name="translationsList">
+	<div class="translations">
 		<ul>
 			{{#each messages}}
 				{{> translation}}
@@ -9,13 +9,9 @@
 </template>
 
 <template name="translation">
-	<li><strong>{{user}}:</strong> {{transText}} {{timestamp}}</li>
-</template>
-
-<template name="messageEntry">
-	<div id="form-container">
-	  <form id="entry-form">
-      <input type="text" id="message-entry" />
-    <form>
-  </div>  
+	<li class="translation">
+		<strong>{{user}}: </strong> 
+		<span>{{transText}}  </span> 
+		<span>{{timestamp}}</span>
+	</li>
 </template>

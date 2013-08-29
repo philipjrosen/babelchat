@@ -71,7 +71,7 @@ if (Meteor.isClient) {
     return Chats.find();
   };
 
-  Template.translatedMessages.messages = function() {
+  Template.translationsList.messages = function() {
     if (Session.equals('current_room', null)) {
       return null;
     } else {
@@ -82,7 +82,7 @@ if (Meteor.isClient) {
     }
   };
   //It doesn't seem like this variable is used anywhere
-  Template.translatedMessages.room_selected = function() {
+  Template.translationsList.room_selected = function() {
     return ((Session.get('current_room') !== undefined) && (!Session.equals('current_room',null)));
   };
 

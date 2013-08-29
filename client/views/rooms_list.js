@@ -11,7 +11,16 @@ Template.roomsList.list_status = function() {
 };
 
 Template.roomsList.events({
-  'click .room' : function() {
-    Session.set('current_room', this._id);
+  'click .room': function() {
+  	var route = '/rooms/' + this._id;
+  	Meteor.Router.to(route);
   }
 });
+
+//Old version before Router added//
+// Template.roomsList.events({
+//   'click .room' : function() {
+//     Session.set('current_room', this._id);
+//   }
+// });
+

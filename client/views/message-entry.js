@@ -10,7 +10,9 @@ var addMessage = function(user, text, timestamp, translation, room_id) {
   //put in the apostrophe if ascii comes back instead
   var regex = /&#39;/g;
   translation = translation.replace(regex, "'");
-  
+  var userObj = Meteor.users.findOne();
+  var user = userObj.username;
+  console.log(user);
   Chats.update({_id:room_id}, 
     {$addToSet:{
       messages:{

@@ -5,5 +5,12 @@
 				{{room}}
 			</div>
 		{{/each}}
+		{{#if new_room}}
+			<div class="room">
+				<input type="text" id="add-room" value="" />
+			</div>
+		{{else}}
+			<div class="btn btn-inverse" id="btnNewRoom">&plus;</div>
+		{{/if}}
 	</div>
 </template>

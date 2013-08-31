@@ -10,11 +10,41 @@ Template.roomsList.list_status = function() {
   }
 };
 
+Session.set('adding_room', false);
+
+Template.roomsList.new_room = function () {
+  return Session.equals('adding_room',true);
+};
+
 Template.roomsList.events({
   'click .room': function() {
   	var route = '/rooms/' + this._id;
   	Meteor.Router.to(route);
+  },
+
+  'click #btnNewRoom' : function (evt, templ) {
+    Session.set('adding_room', true);
+    Meteor.flush();
+    templ.find('#add-room').focus();
+  },
+
+  'keyup #add-room' : function(evt, templ) {
+    if (evt.which === 13) {
+      var roomVal = evt.target.value || "";
+    }
+    if (roomVal) {
+      Chats.insert({room: roomVal});
+      Session.set('adding_room', false);
+    }
+    if (evt.which === 27) {
+     Session.set('adding_room', false); 
+    }
+  },
+
+  'focusout #add-room' : function(evt, templ) {
+    Session.set('adding_room', false);
   }
+
 });
 
 //Old version before Router added//

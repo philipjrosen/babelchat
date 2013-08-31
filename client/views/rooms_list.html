@@ -1,16 +1,16 @@
 <template name="roomsList">
 	<div id="rooms" class="btn-group">
-		{{#each rooms}}
-			<div class="room btn {{list_status}}" id="{{_id}}">
-				{{room}}
-			</div>
-		{{/each}}
-		{{#if new_room}}
-			<div class="room">
+			{{#if new_room}}
+			<div>
 				<input type="text" id="add-room" value="" />
 			</div>
 		{{else}}
 			<div class="btn btn-inverse" id="btnNewRoom">&plus;</div>
 		{{/if}}
+		{{#each rooms}}
+			<div class="room btn {{list_status}}" id="{{_id}}">
+				{{room}}
+			</div>
+		{{/each}}
 	</div>
 </template>

@@ -1,6 +1,7 @@
 /* CSS declarations go here */
 body {
   background-color: #ccc;
+  padding-top: 40px;
 }
 li {
   list-style-type: none;

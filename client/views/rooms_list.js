@@ -2,10 +2,6 @@ Template.roomsList.rooms = function () {
   return Chats.find({}, {sort: {room: 1}});
 };
 
-Template.roomsList.languages = function () {
-  return Languages.find({}, {sort: {name: 1}});
-};
-
 Template.roomsList.list_status = function() {
   if (Session.equals('current_room', this._id)) {
     return "";
@@ -40,9 +36,8 @@ Template.roomsList.events({
       var roomVal = evt.target.value || "";
     }
     if (roomVal) {
-      Chats.insert({room: roomVal});
-      //need to lookup the targVal from availLangs array
-      // Chats.insert({room: roomVal, target: targVal});
+      var targVal = Languages.findOne({name:roomVal}).language;
+      Chats.insert({room: roomVal, target: targVal});
       Session.set('adding_room', false);
     }
     if (evt.which === 27) {
@@ -56,11 +51,4 @@ Template.roomsList.events({
 
 });
 
-
-//Old version before Router added//
-// Template.roomsList.events({
-//   'click .room' : function() {
-//     Session.set('current_room', this._id);
-//   }
-// });
 

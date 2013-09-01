@@ -38,6 +38,9 @@ Template.roomsList.events({
     if (roomVal) {
       var targVal = Languages.findOne({name:roomVal}).language;
       Chats.insert({room: roomVal, target: targVal});
+      var roomId = Chats.findOne({room:roomVal})._id;
+      var route = '/rooms/' + roomId;
+      Meteor.Router.to(route);
       Session.set('adding_room', false);
     }
     if (evt.which === 27) {

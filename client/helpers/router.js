@@ -5,6 +5,7 @@ Meteor.Router.add({
     to: 'roomPage', 
     and: function(id) { 
       Session.set('current_room', id);
+      $("#message-entry").focus();
   	}
   }
 });

@@ -1,7 +1,7 @@
 var globals = {
-    url: 'https://www.googleapis.com/language/translate/v2',
-    key: 'AIzaSyApd5b77jtVRZCfCAn6wzlaD52FoXeJwCw'
-  };  
+  url: 'https://www.googleapis.com/language/translate/v2',
+  key: 'AIzaSyApd5b77jtVRZCfCAn6wzlaD52FoXeJwCw'
+};  
 
 var addMessage = function(user, text, timestamp, translation, room_id) {
   if(!text && !room_id) {

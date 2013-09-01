@@ -2,6 +2,10 @@ Template.roomsList.rooms = function () {
   return Chats.find({}, {sort: {room: 1}});
 };
 
+Template.roomsList.languages = function () {
+  return Languages.find({}, {sort: {name: 1}});
+};
+
 Template.roomsList.list_status = function() {
   if (Session.equals('current_room', this._id)) {
     return "";
@@ -26,6 +30,9 @@ Template.roomsList.events({
     Session.set('adding_room', true);
     Meteor.flush();
     templ.find('#add-room').focus();
+    // $('#add-room').autocomplete({
+    //   source: availableLangs
+    // });
   },
 
   'keyup #add-room' : function(evt, templ) {
@@ -34,6 +41,8 @@ Template.roomsList.events({
     }
     if (roomVal) {
       Chats.insert({room: roomVal});
+      //need to lookup the targVal from availLangs array
+      // Chats.insert({room: roomVal, target: targVal});
       Session.set('adding_room', false);
     }
     if (evt.which === 27) {
@@ -46,6 +55,7 @@ Template.roomsList.events({
   }
 
 });
+
 
 //Old version before Router added//
 // Template.roomsList.events({

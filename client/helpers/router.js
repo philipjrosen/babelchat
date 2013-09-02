@@ -1,5 +1,7 @@
 Meteor.Router.add({
-  '/': 'home',
+  '/': 'splash',
+
+  '/rooms/' : 'home',
 
   '/rooms/:_id': {
     to: 'roomPage', 

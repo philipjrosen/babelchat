@@ -7,6 +7,9 @@ body {
 li {
   list-style-type: none;
 }
+.translations {
+  width: 40%;
+}
 .hero-unit {
   background-color: #16A085;
   text-align: center;
@@ -14,3 +17,10 @@ li {
 .hero-unit p {
   font-size: 20px;
 }
+.zebra ul li {
+  background: #1ABC9C;
+}
+.zebra ul li:nth-child(odd) {
+  background: #16A085;
+}
+

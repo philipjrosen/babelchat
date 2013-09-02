@@ -2,7 +2,7 @@ Template.roomsList.rooms = function () {
   return Chats.find({}, {sort: {room: 1}});
 };
 
-Template.roomsList.list_status = function() {
+Template.roomsList.btn_type = function() {
   if (Session.equals('current_room', this._id)) {
     return "";
   } else {
@@ -40,6 +40,7 @@ Template.roomsList.events({
       Chats.insert({room: roomVal, target: targVal});
       var roomId = Chats.findOne({room:roomVal})._id;
       var route = '/rooms/' + roomId;
+      console.log(route);
       Meteor.Router.to(route);
       Session.set('adding_room', false);
     }

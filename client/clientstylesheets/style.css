@@ -1,8 +1,16 @@
 /* CSS declarations go here */
 body {
-  background-color: #16ab84;
+  /*background-color: #16ab84;*/
+  background-color: #1ABC9C;
   padding-top: 40px;
 }
 li {
   list-style-type: none;
+}
+.hero-unit {
+  background-color: #16A085;
+  text-align: center;
+}
+.hero-unit p {
+  font-size: 20px;
 }

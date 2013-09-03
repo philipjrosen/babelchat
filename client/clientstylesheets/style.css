@@ -23,4 +23,12 @@ li {
 .zebra ul li:nth-child(odd) {
   background: #16A085;
 }
+.translations {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 300px;
+  height: 400px;
+  overflow: auto;
+  border: 1px solid gray;
+}
 
